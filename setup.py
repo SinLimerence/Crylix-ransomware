@@ -1,4 +1,3 @@
-# install_dependencies.py
 import os
 import sys
 import subprocess
@@ -6,14 +5,12 @@ import platform
 from time import sleep
 
 def check_admin():
-    """Check if running as admin"""
     try:
         return os.getuid() == 0 if platform.system() != "Windows" else ctypes.windll.shell32.IsUserAnAdmin() != 0
     except:
         return False
 
 def install_packages():
-    """Install all required dependencies"""
     requirements = [
         "cryptography>=42.0.0",
         "pywin32>=306",
@@ -47,7 +44,6 @@ def install_packages():
                 package
             ])
         
-        # Special case for pywin32 post-install
         if platform.system() == "Windows":
             print("[+] Running pywin32 post-install...")
             try:
