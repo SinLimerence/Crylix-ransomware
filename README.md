@@ -1,5 +1,9 @@
-# Ransomware (Educational Purposes Only)
 
+![standard](https://github.com/user-attachments/assets/a629bc06-634d-4c5b-b3e3-58df3dfec3b8)
+
+
+
+# Ransomware (Educational Purposes Only)
 
 
 ## Overview
