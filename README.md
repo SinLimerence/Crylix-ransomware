@@ -45,6 +45,7 @@ The code is provided for **cybersecurity education, penetration testing training
 1. pip install nuitka
 2. pip install ordered-set zstandard
 3. python -m nuitka --onefile --windows-disable-console --follow-imports Crylix.py
+If you get errors compiling turn ur antivirus off till it finishes compiling
 ```
 
 
