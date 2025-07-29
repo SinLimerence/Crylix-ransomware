@@ -17,7 +17,7 @@ The code is provided for **cybersecurity education, penetration testing training
 ## Features
 - **AES-256 Encryption** with chaotic key generation
 - **Persistence Mechanisms**:
-  - Disables Task Manager
+  - Disables Task Manager 
   - Blocks common termination methods
   - Maintains window persistence
   - Registry Run Key (user login)
