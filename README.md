@@ -19,7 +19,7 @@ The code is provided for **cybersecurity education, penetration testing training
 - **Persistence Mechanisms**:
   - Disables Task Manager 
   - Blocks common termination methods
-  - Maintains window persistence
+  - Maintains window persistence 
   - Registry Run Key (user login)
   - Scheduled Task (system-wide, hidden)
   - WMI Event Subscription (survives most cleanup attempts)
