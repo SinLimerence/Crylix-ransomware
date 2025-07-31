@@ -11,7 +11,7 @@ This repository contains a ransomware script designed to demonstrate:
 - File encryption techniques
 - System persistence mechanisms
 - Anti-analysis methods
-
+ 
 The code is provided for **cybersecurity education, penetration testing training, and defensive research**.
 
 ## Features
