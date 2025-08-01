@@ -13,7 +13,7 @@ This repository contains a ransomware script designed to demonstrate:
 - Anti-analysis methods
  
 The code is provided for **cybersecurity education, penetration testing training, and defensive research**.
-
+ 
 ## Features
 - **AES-256 Encryption** with chaotic key generation
 - **Persistence Mechanisms**:
